@@ -1,6 +1,7 @@
 const MODULE_NAME = "dad_jokes";
 const BASE_URL = "https://icanhazdadjoke.com";
-let USER_AGENT = "dad_jokes deno module";
+let USER_AGENT =
+  "dad_jokes Deno module by Carter Snook (https://deno.land/x/dad_jokes)";
 const DEFAULT_USER_AGENT = USER_AGENT;
 
 export interface AnyObj {
@@ -192,4 +193,24 @@ export async function getSearchedJokes(
   return new SearchedJokesResponse(
     await fetchDadJokeAPIJson(`/search?${params.toString()}`)
   );
+}
+
+class AllJokesResponse extends SearchedJokesResponse {
+  constructor(data: AnyObj) {
+    super(data);
+  }
+}
+
+/**
+ * Returns all of the paginated jokes.
+ * @async
+ * @param page the page of paginated results to go to (default = 1)
+ * @param limit the maximum number of jokes to show per page (default = 20)
+ * @returns SearchedJokesResponse the results
+ */
+export async function getAllJokes(
+  page: number = 1,
+  limit: number = 20
+): Promise<AllJokesResponse> {
+  return new AllJokesResponse(await getSearchedJokes("", page, limit));
 }
